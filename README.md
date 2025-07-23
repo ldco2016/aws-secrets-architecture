@@ -41,13 +41,12 @@ Secrets in AWS Secrets Manager
 | Accessed via IAM Policies
 v
 Apps / Pipelines / Audit Tools
-```yaml
 
 ---
 
 ## 🔧 Example: Terraform Module Usage
 
-```hcl
+```yaml
 module "engineering_secrets" {
   source = "./modules/secret"
 
@@ -64,6 +63,43 @@ module "engineering_secrets" {
   })
 }
 ```
+## 🔒 Security Best Practices
+
+- Mark variables with `sensitive = true`
+- Use KMS encryption (enabled by default in Secrets Manager).
+- Apply IAM least privilege access controls.
+- Use resource tagging for ownership and auditing.
+- Enable AWS Config and CloudTrail for full audit trails.
+
+## 📁 Remote State Backend Setup (Recommended)
+```
+terraform {
+  backend "s3" {
+    bucket         = "org-terraform-state"
+    key            = "secrets/global.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+  }
+}
+```
+
+## 🌐 Optional: Secret Rotation
+- Enable native rotation in Secrets Manager.
+- Use AWS-provided Lambda templates for rotating credentials (namely, RDS, RedShift).
+
+## 🏛️ Governance & Compliance
+- Enforce team-based tagging (`department`, `environment`, etc).
+- Schedule and automate secret rotation.
+- Implement IAM Access Analyzer for permission reviews.
+- Integrate with AWS Config rules and Security Hub for compliance checks.
+
+## ✅ Outcomes
+- 🔐 Single source of truth for secrets
+- 🚫 Reduced risk of secret sprawl
+- 📋 Simplified auditability and compliance
+- 🤖 Automated provisioning and rotation workflows
+
 
 
 
